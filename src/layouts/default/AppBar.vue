@@ -1,13 +1,35 @@
 <template>
-  <v-app-bar flat>
-    <v-app-bar-title>
-      <v-icon icon="mdi-circle-slice-4" />
-
-      Base Preset
-    </v-app-bar-title>
-  </v-app-bar>
+  <div class="text-center">
+    <v-select
+      v-model="location"
+      :items="locations"
+      label="Location"
+    ></v-select>
+    <v-menu :location="location">
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </div>
 </template>
 
-<script setup>
-  //
+<script>
+  export default {
+    data: () => ({
+      locations: [
+        'top',
+        'bottom',
+        'start',
+        'end',
+        'center',
+        ],
+      location: 'end',
+    }),
+  }
 </script>
+
