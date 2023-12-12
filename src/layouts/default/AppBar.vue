@@ -21,9 +21,9 @@ export default {
   }),
 
   watch: {
-    tab(newValue) {
-      EventBus.emit('tabSelected', newValue)
-      console.log(newValue)
+    tab(category) {
+      EventBus.emit('tabSelected', {category: category})
+      console.log(category)
     }
   }
 }
