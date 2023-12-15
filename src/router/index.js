@@ -4,14 +4,25 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    component: () => import('@/layouts/default/Default.vue'),
+    name: 'default_with_nav_bar',
+    component: () => import('@/layouts/default/DefaultWithNavBar.vue'),
     children: [
       {
-        path: '',
-        name: 'Home',
-        component: () => import('@/views/Home.vue'),
+        path: '/products',
+        name: 'products_list',
+        component: () => import('@/components/ProductsList.vue'), //to be fixed, component not loading
       },
-    ],
+      ],
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/layouts/default/Default.vue'),
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/layouts/default/Default.vue'),
   },
 ]
 
