@@ -1,9 +1,0 @@
-<template>
-  <v-app>
-    <default-footer />
-  </v-app>
-</template>
-
-<script setup>
-  import DefaultFooter from '@/components/Footer.vue'
-</script>
