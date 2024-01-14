@@ -15,6 +15,7 @@
     "mitt": "^3.0.1",
     "roboto-fontface": "*",
     "template": "^0.15.0",
+    "vee-validate": "^4.12.3",
     "vue": "^3.2.0",
     "vue-router": "^4.2.5",
     "vuetify": "^3.0.0"
