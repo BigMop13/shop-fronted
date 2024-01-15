@@ -33,7 +33,8 @@ export default {
 
   methods: {
     async fetchData() {
-      const response = await fetch('http://206.81.30.52:8090/api/categories');
+      const env = import.meta.env.VITE_APP_API_BASE_URL;
+      const response = await fetch(env + 'categories');
       this.tabItems = await response.json();
     }
   }
