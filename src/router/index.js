@@ -26,6 +26,12 @@ const routes = [
     meta: {loggedNavbar: false},
     component: () => import('@/components/RegisterForm.vue'),
   },
+  {
+    path: '/products/:id',
+    name: 'product_details',
+    meta: {loggedNavbar: true},
+    component: () => import('@/components/SingleProduct.vue')
+  }
 ]
 
 const router = createRouter({
