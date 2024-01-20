@@ -10,7 +10,6 @@
         </div>
 
         <div class="d-flex align-center">
-
           <div class="d-inline-flex">
             <v-btn
               :disabled="page === 1"
@@ -42,49 +41,46 @@
           sm="6"
           xl="3"
         >
-          <v-sheet border>
-            <v-img
-              :src="'https://www.google.com/url?sa=i&url=https%3A%2F%2Fnaklejki.sklep.pl%2Fplakat-panda-dla-dziecka-obrazek-a4-a3-50x70-do-wyboru-p-462.html&psig=AOvVaw3gUQ_NwDYWePoAtLYsEeP2&ust=1705353617514000&source=images&cd=vfe&ved=0CBIQjRxqFwoTCLDR5bfn3YMDFQAAAAAdAAAAABAE'"
-              cover
-              height="150"
-            ></v-img>
+          <!-- Clickable element -->
+          <div @click="handleClick(item)" class="clickable-record">
+            <v-sheet border>
+              <v-img
+                :src="item.imageUrl"
+                cover
+                height="150"
+              ></v-img>
 
+              <v-list-item
+                :title="item.name"
+                lines="two"
+                density="comfortable"
+                subtitle="Nazwa"
+              >
+                <template v-slot:title>
+                  <strong class="text-h6">
+                    {{ item.name }}
+                  </strong>
+                </template>
+              </v-list-item>
 
-            <v-list-item
-              :title="item.name"
-              lines="two"
-              density="comfortable"
-              subtitle="Nazwa"
-            >
-              <template v-slot:title>
-                <strong class="text-h6">
-                  {{ item.name }}
-                </strong>
-              </template>
-            </v-list-item>
-
-            <v-table density="compact" class="text-caption">
-              <tbody>
-              <tr align="right">
-                <th>Opis:</th>
-
-                <td>{{ item.description }}</td>
-              </tr>
-
-              <tr align="right">
-                <th>Ilość:</th>
-
-                <td>{{ item.stockQuantity}}</td>
-              </tr>
-
-              <tr align="right">
-                <th>Cena:</th>
-
-                <td>${{ item.price }}</td>
-              </tr>
-              </tbody>
-            </v-table>
-          </v-sheet>
+              <v-table density="compact" class="text-caption">
+                <tbody>
+                <tr align="right">
+                  <th>Opis:</th>
+                  <td>{{ item.description }}</td>
+                </tr>
+                <tr align="right">
+                  <th>Ilość:</th>
+                  <td>{{ item.stockQuantity }}</td>
+                </tr>
+                <tr align="right">
+                  <th>Cena:</th>
+                  <td>${{ item.price }}</td>
+                </tr>
+                </tbody>
+              </v-table>
+            </v-sheet>
+          </div>
         </v-col>
       </v-row>
     </template>
@@ -95,7 +91,6 @@
         class="justify-space-between text-body-2 mt-4"
       >
         <!--Total mice: {{ mice.length }}-->
-
         category: {{ selectedCategory.value }}
         <div>
           Page {{ page }} of {{ pageCount }}
@@ -117,21 +112,36 @@ export default {
     }
   },
 
-    created() {
+  created() {
     EventBus.on('tabSelected', ({category}) => {
       this.selectedCategory = category;
-      console.log(this.selectedCategory)
-      this.fetchData(this.selectedCategory)
-    });
+      console.log(this.selectedCategory);
       this.fetchData(this.selectedCategory);
+    });
+    this.fetchData(this.selectedCategory);
   },
 
   methods: {
-    async fetchData(categoryId) {
+    async fetchData() {
       const env = import.meta.env.VITE_APP_API_BASE_URL;
-      const response = await fetch(env + 'category_products/' + categoryId);
+      const response = await fetch(env + 'products');
       this.tabItems = await response.json();
     },
+
+    handleClick(item) {
+      console.log('Clicked item:', item);
+    }
   },
 };
 </script>
+
+<style>
+.clickable-record {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clickable-record:hover {
+  background-color: #f5f5f5;
+}
+</style>
