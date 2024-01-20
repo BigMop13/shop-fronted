@@ -1,4 +1,5 @@
 <template>
+  <div v-if="item">
   <v-container>
     <v-row justify="center">
       <v-col cols="12" sm="8" md="6">
@@ -18,13 +19,14 @@
       </v-col>
     </v-row>
   </v-container>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      item: {}
+      item: null
     };
   },
   created() {
@@ -33,24 +35,17 @@ export default {
   methods: {
     async fetchItemDetails() {
       const itemId = this.$route.params.id;
-      // Fetch the item details from your API or data store
-      // Replace the URL with your actual API endpoint
+
       const env = import.meta.env.VITE_APP_API_BASE_URL;
 
       const response = await fetch(env + 'products/' + itemId);
       this.item = await response.json();
+      console.log(this.item);
     },
 
     buyItem(item) {
-      // Implement the logic to handle the purchase
       console.log('Buying item:', item);
-      // For example, add the item to the shopping cart
-      // Or navigate to a checkout page with this.$router.push(...)
     }
   }
 };
 </script>
-
-<style>
-/* Add any specific styles for your item details view here */
-</style>
