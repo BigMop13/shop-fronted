@@ -130,6 +130,9 @@ export default {
 
     handleClick(item) {
       console.log('Clicked item:', item);
+
+      this.$router.push({ name: 'product_details', params: { id: item.id } });
+
     }
   },
 };
