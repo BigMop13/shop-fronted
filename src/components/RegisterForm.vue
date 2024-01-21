@@ -24,80 +24,90 @@
       Submit
     </v-btn>
 
-    <v-btn @click="handleReset">
+    <v-btn>
       Clear
     </v-btn>
   </form>
 
-  <!-- Dialog for displaying messages -->
-  <v-dialog v-model="isDialogVisible" persistent max-width="300px">
+  <v-dialog v-model="dialog.show" persistent max-width="300px">
     <v-card>
-      <v-card-title class="text-h5">{{ dialogMessage }}</v-card-title>
+      <v-card-title>{{ dialog.title }}</v-card-title>
+      <v-card-text>{{ dialog.message }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="closeDialog">OK</v-btn>
+        <v-btn color="green darken-1" text @click="closeDialog">OK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
+
 </template>
 
-<script setup>
-import { useField, useForm } from 'vee-validate';
-import * as yup from 'yup';
+<script>
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-// State for dialog visibility and message
-let isDialogVisible = false;
-let dialogMessage = '';
+export default {
+  setup() {
+    const router = useRouter(); // Setup Vue Router
 
-// Define the validation schema using yup
-const schema = yup.object({
-  email: yup.string().email('Niepoprawny adres e-mail.').required(),
-  password: yup.string().min(6, 'Password must be at least 6 characters.').required(),
-  passwordConfirmation: yup.string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match.')
-    .required()
-});
+    return { router };
+  },
 
-const { handleSubmit, resetForm } = useForm({
-  validationSchema: schema
-});
-
-const email = useField('email');
-const password = useField('password');
-const passwordConfirmation = useField('passwordConfirmation');
-
-const submit = handleSubmit(async values => {
-  try {
-    const env = import.meta.env.VITE_APP_API_BASE_URL;
-    const response = await fetch(`${env}register_user`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  data() {
+    return {
+      email: {
+        value: '',
+        errorMessage: ''
       },
-      body: JSON.stringify(values)
-    });
+      password: {
+        value: '',
+        errorMessage: ''
+      },
+      passwordConfirmation: {
+        value: '',
+        errorMessage: ''
+      },
+      dialog: {
+        show: false,
+        title: '',
+        message: ''
+      }
+    };
+  },
 
-    if (!response.ok) {
-      // Handle the API error response here
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Network response was not ok');
+  methods: {
+    async submit() {
+      this.email.errorMessage = '';
+      this.password.errorMessage = '';
+      this.passwordConfirmation.errorMessage = '';
+
+      try {
+        const env = import.meta.env.VITE_APP_API_BASE_URL;
+        await axios.post(`${env}register_user`, {
+          email: this.email.value,
+          password: this.password.value
+        });
+
+        this.showDialog('Registrations successfully');
+      } catch (error) {
+          this.showDialog('ERROR: try again later');
+      }
+    },
+
+    showDialog(title, message) {
+      this.dialog.title = title;
+      this.dialog.message = message;
+      this.dialog.show = true;
+    },
+
+    closeDialog() {
+      this.dialog.show = false;
+      this.redirectToLogin();
+    },
+
+    redirectToLogin() {
+      this.router.push('/login');
     }
-
-    const responseData = await response.json();
-    dialogMessage = 'Everything went well!';
-    isDialogVisible = true;
-  } catch (error) {
-    dialogMessage = error.message || 'There was an error, try again later ';
-    isDialogVisible = true;
   }
-});
-
-
-const handleReset = () => {
-  resetForm();
-};
-
-const closeDialog = () => {
-  isDialogVisible = false;
 };
 </script>

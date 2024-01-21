@@ -124,7 +124,7 @@ export default {
   methods: {
     async fetchData() {
       const env = import.meta.env.VITE_APP_API_BASE_URL;
-      const response = await fetch(env + 'products');
+      const response = await fetch(env + 'category_products/' + this.selectedCategory);
       this.tabItems = await response.json();
     },
 
