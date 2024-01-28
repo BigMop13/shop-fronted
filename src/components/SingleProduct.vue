@@ -20,13 +20,25 @@
     </v-row>
   </v-container>
   </div>
+
+  <v-dialog v-model="showDialog">
+    <v-card>
+      <v-card-title class="text-h5">Potwierdzenie</v-card-title>
+      <v-card-text>Produkt został dodany do koszyka</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="green darken-1" text @click="showDialog = false">OK</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      item: null
+      item: null,
+      showDialog: false,
     };
   },
   created() {
@@ -44,7 +56,9 @@ export default {
     },
 
     buyItem(item) {
+      this.$store.commit('addProduct', item);
       console.log('Buying item:', item);
+      this.showDialog = true;
     }
   }
 };
