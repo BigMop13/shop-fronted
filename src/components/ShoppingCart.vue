@@ -12,28 +12,29 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import {toRaw} from "vue";
-
 export default {
-  computed: {
-    ...mapState(['products']),
-    shoppingCartItems() {
-      console.log(toRaw(this.products))
-      return this.products;
-    },
-    headers() {
-      return [
-        { text: 'Nazwa produktu', value: 'name' },
-        //dodaj resztę wartości po naprawie
-      ];
-    },
-  },
   data() {
     return {
       search: '',
+      shoppingCartItems: [],
+      headers: [
+        { text: 'Nazwa', value: 'name' },
+        { text: 'Kategoria', value: 'category.name' },
+        { text: 'Ilość', value: 'quantity' },
+        { text: 'Cena', value: 'price'},
+      ],
     };
   },
+  created() {
+    this.loadCartProducts();
+  },
+  methods: {
+    loadCartProducts() {
+      let products = localStorage.getItem('cartProducts');
+      this.shoppingCartItems = products ? JSON.parse(products) : [];
+      console.log(products)
+    }
+  }
 };
 </script>
 

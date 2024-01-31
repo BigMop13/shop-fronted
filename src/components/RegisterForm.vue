@@ -48,7 +48,7 @@ import { useRouter } from 'vue-router';
 
 export default {
   setup() {
-    const router = useRouter(); // Setup Vue Router
+    const router = useRouter();
 
     return { router };
   },
