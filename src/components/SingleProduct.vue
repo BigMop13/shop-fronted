@@ -14,19 +14,38 @@
           </v-card-text>
           <v-card-actions>
             <v-btn color="primary" @click="buyItem(item)">Buy Now</v-btn>
+            <v-btn color="secondary" @click="goToCart">Go to Cart</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
   </div>
+
+  <v-dialog v-model="showDialog">
+    <v-card>
+      <v-card-title class="text-h5">Potwierdzenie</v-card-title>
+      <v-card-text>Produkt został dodany do koszyka</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="green darken-1" text @click="showDialog = false">OK</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
+import {useRouter} from "vue-router";
+
 export default {
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
   data() {
     return {
-      item: null
+      item: null,
+      showDialog: false,
     };
   },
   created() {
@@ -44,8 +63,25 @@ export default {
     },
 
     buyItem(item) {
+      let cartProducts = localStorage.getItem('cartProducts');
+      cartProducts = cartProducts ? JSON.parse(cartProducts) : [];
+      const existingProductIndex = cartProducts.findIndex(p => p.id === item.id);
+      if (existingProductIndex !== -1) {
+        cartProducts[existingProductIndex].quantity += 1;
+        cartProducts[existingProductIndex].price = cartProducts[existingProductIndex].price * cartProducts[existingProductIndex].quantity;
+      } else {
+        const newItem = { ...item, quantity: 1 };
+        cartProducts.push(newItem);
+      }
+      localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
       console.log('Buying item:', item);
+      this.showDialog = true;
+    },
+
+    goToCart() {
+      this.router.push({ path: '/shopping-cart' });
     }
+
   }
 };
 </script>

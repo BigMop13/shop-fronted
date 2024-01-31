@@ -22,7 +22,7 @@ const routes = [
   },
   {
     path: '/register',
-    name: 'register_form',
+    name: 'register',
     meta: {loggedNavbar: false},
     component: () => import('@/components/RegisterForm.vue'),
   },
