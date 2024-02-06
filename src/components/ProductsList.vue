@@ -101,8 +101,6 @@
 </template>
 
 <script>
-import EventBus from "@/plugins/eventBus";
-
 export default {
   data() {
     return {
@@ -112,19 +110,20 @@ export default {
     }
   },
 
-  created() {
-    EventBus.on('tabSelected', ({category}) => {
-      this.selectedCategory = category;
-      console.log(this.selectedCategory);
-      this.fetchData(this.selectedCategory);
-    });
-    this.fetchData(this.selectedCategory);
+  watch: {
+    '$route'(to, from) {
+      if (to.params.categoryId !== from.params.categoryId) {
+        this.fetchData();
+      }
+    }
   },
+
 
   methods: {
     async fetchData() {
+      const categoryId = this.$route.params.categoryId || this.selectedCategory;
       const env = import.meta.env.VITE_APP_API_BASE_URL;
-      const response = await fetch(env + 'category_products/' + this.selectedCategory);
+      const response = await fetch(env + 'category_products/' + categoryId);
       this.tabItems = await response.json();
     },
 
