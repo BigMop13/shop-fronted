@@ -1,9 +1,8 @@
-// Composables
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
-    path: '/products',
+    path: '/products/:categoryId',
     name: 'products_list',
     meta: {loggedNavbar: true},
     component: () => import('@/components/ProductsList.vue'),

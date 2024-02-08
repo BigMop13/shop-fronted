@@ -5,7 +5,7 @@
       color="deep-purple-accent-4"
       align-tabs="center"
     >
-      <v-tab v-for="item in tabItems" :key="item.id" :value="item.id">
+      <v-tab @click="navigate(item.id)" v-for="item in tabItems" :key="item.id" :value="item.id">
         {{ item.name }}
       </v-tab>
     </v-tabs>
@@ -14,12 +14,18 @@
 
 <script>
 import EventBus from "@/plugins/eventBus";
+import {useRouter} from "vue-router";
 
 export default {
   data: () => ({
     tab: null,
     tabItems: [],
   }),
+
+  setup() {
+    const router = useRouter();
+    return {router};
+  },
 
   mounted() {
     this.fetchData();
@@ -36,6 +42,10 @@ export default {
       const env = import.meta.env.VITE_APP_API_BASE_URL;
       const response = await fetch(env + 'categories');
       this.tabItems = await response.json();
+    },
+
+    navigate(itemCategories) {
+      this.$router.push({ name: 'products_list', params: { categoryId: itemCategories} });
     }
   }
 }
