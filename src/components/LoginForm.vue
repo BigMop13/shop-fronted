@@ -38,7 +38,9 @@
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
+const defaultCategory = 1;
 export default {
+
   setup() {
     const router = useRouter();
     return { router };
@@ -97,7 +99,7 @@ export default {
 
     closeDialog() {
       this.dialog.show = false;
-      this.router.push({name: 'products_list'});
+      this.router.push({name: 'products_list', params: { categoryId: defaultCategory } });
     }
   }
 };
