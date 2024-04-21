@@ -1,14 +1,17 @@
 <template>
   <v-card>
-    <v-tabs
-      v-model="tab"
-      color="deep-purple-accent-4"
-      align-tabs="center"
-    >
-      <v-tab @click="navigate(item.id)" v-for="item in tabItems" :key="item.id" :value="item.id">
-        {{ item.name }}
-      </v-tab>
-    </v-tabs>
+    <div class="tabs-container">
+      <v-tabs
+        v-model="tab"
+        color="deep-purple-accent-4"
+        class="v-tabs"
+      >
+        <v-tab @click="navigate(item.id)" v-for="item in tabItems" :key="item.id" :value="item.id">
+          {{ item.name }}
+        </v-tab>
+      </v-tabs>
+      <v-breadcrumbs :items="['Login', 'Register']" class="breadcrumbs"></v-breadcrumbs>
+    </div>
   </v-card>
 </template>
 
@@ -49,5 +52,20 @@ export default {
     }
   }
 }
-
 </script>
+
+<style>
+.tabs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.v-tabs {
+  max-width: calc(100% - 200px);
+}
+
+.breadcrumbs {
+  margin-left: auto;
+}
+</style>
