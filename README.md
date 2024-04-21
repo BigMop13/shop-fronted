@@ -1,69 +1,40 @@
-# base
+# Online Store Frontend
 
-## Project setup
+## About The Project
 
-```
-# yarn
-yarn
+This project is the front-end for an online store, developed with Vue.js. It provides a dynamic and responsive user interface to interact with the backend store API, allowing users to browse products, manage their shopping cart, and checkout.
 
-# npm
-npm install
+## Features
 
-# pnpm
-pnpm install
+- **Login / Register**:
+- **Browsing products**:
+- **Shopping Cart**:
+- **Responsive Design**:
 
-# pnpm
-bun install
-```
+## Built With
 
-### Compiles and hot-reloads for development
+- [Vue.js](https://vuejs.org/)
+- [Vuex](https://vuex.vuejs.org/) for state management
+- [Vue Router](https://router.vuejs.org/) for navigation
+- [Axios](https://axios-http.com/) for API requests
+- Vuetify components for UI design
 
-```
-# yarn
-yarn dev
+## Getting Started
 
-# npm
-npm run dev
+### Prerequisites
 
-# pnpm
-pnpm dev
+- npm or yarn
+- Node.js
 
-# bun
-bun run dev
-```
+### Installation
 
-### Compiles and minifies for production
-
-```
-# yarn
-yarn build
-
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# bun
-bun run build
-```
-
-### Lints and fixes files
-
-```
-# yarn
-yarn lint
-
-# npm
-npm run lint
-
-# pnpm
-pnpm lint
-
-# bun
-bun run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
+1. Clone the repo:
+   ```sh
+   https://github.com/BigMop13/shop-fronted.git
+1. Install dependencies:
+   ```sh
+    npm install
+1. Run application:
+   ```sh
+   npm run dev  (development)
+   ```
