@@ -36,7 +36,7 @@
 
 <script>
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import {useRouter} from "vue-router";
 
 const defaultCategory = 1;
 export default {

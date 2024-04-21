@@ -26,7 +26,7 @@ const routes = [
     component: () => import('@/components/RegisterForm.vue'),
   },
   {
-    path: '/products/:id',
+    path: '/product_details/:id', // zrobić wyszukanie przedmiotu z sugestii przez name (osobny endpoint needed) (id przedmiotu nie jest dostępne w redisie, dołożyć index na name w bazie)
     name: 'product_details',
     meta: {loggedNavbar: true, requiresAuth: true},
     component: () => import('@/components/SingleProduct.vue')

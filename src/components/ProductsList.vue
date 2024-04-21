@@ -10,33 +10,25 @@
         @input="fetchSuggestions"
       ></v-text-field>
 
-      <v-autocomplete
-        v-if="searchSuggestions.length > 0 && searchQuery.length >= 2"
-        :items="searchSuggestions"
-        item-text="name"
-        item-value="id"
-        v-model="selectedSuggestion"
-        @change="onSuggestionSelect"
-        dense
-        outlined
-        flat
-        hide-no-data
-        hide-details
-        label="Sugestie wyszukiwania"
-        return-object
-      ></v-autocomplete>
+      <div v-if="searchSuggestions.length > 0 && searchQuery.length >= 2" class="suggestions-container">
+        <div
+          v-for="(suggestion, index) in searchSuggestions"
+          :key="index"
+          class="suggestion-item"
+          @click="onSuggestionSelect(suggestion)"
+        >
+          <div class="suggestion-name">{{ suggestion.photo }}</div>
+          <div class="suggestion-price">${{ suggestion.name }}</div>
+        </div>
+      </div>
     </div>
 
     <v-data-iterator
-      :items="filteredItems"
+      :items="tabItems"
       :items-per-page="itemsPerPage"
     >
       <template v-slot:header="{ page, pageCount, prevPage, nextPage }">
         <h1 class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
-          <div class="text-truncate">
-            Most popular mice
-          </div>
-
           <div class="d-flex align-center">
             <div class="d-inline-flex">
               <v-btn
@@ -63,7 +55,7 @@
       <template v-slot:default>
         <v-row>
           <v-col
-            v-for="(item, i) in filteredItems"
+            v-for="(item, i) in tabItems"
             :key="i"
             cols="12"
             sm="6"
@@ -129,6 +121,7 @@
 
 <script>
 export default {
+  props: ['categoryId'],
   data() {
     return {
       itemsPerPage: 8,
@@ -137,6 +130,7 @@ export default {
       searchQuery: '',
       searchSuggestions: [],
       selectedSuggestion: null,
+      searchCache: {},
     }
   },
 
@@ -152,18 +146,11 @@ export default {
     }
   },
 
-  computed: {
-    filteredItems() {
-      if (this.selectedSuggestion) {
-        return [this.selectedSuggestion];
-      }
-      return this.searchQuery.length >= 2
-        ? this.tabItems.filter((item) => item.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-        : this.tabItems;
-    }
-  },
-
   methods: {
+    handleClick(item) {
+      this.$router.push({ name: 'product_details', params: { id: item.id } });
+    },
+
     async fetchData() {
       const categoryId = this.$route.params.categoryId || this.selectedCategory;
       const env = import.meta.env.VITE_APP_API_BASE_URL;
@@ -173,16 +160,24 @@ export default {
 
     async fetchSuggestions() {
       if (this.searchQuery.length >= 2) {
-        const env = import.meta.env.VITE_APP_API_BASE_URL;
-        try {
-          const response = await fetch(`${env}search_products/${this.searchQuery}`);
-          if (response.ok) {
-            this.searchSuggestions = await response.json();
-          } else {
-            console.error('Error fetching suggestions', response);
+        if (this.searchCache[this.searchQuery]) {
+          console.log('Using cache');
+          this.searchSuggestions = this.searchCache[this.searchQuery];
+        } else {
+          const env = import.meta.env.VITE_APP_API_BASE_URL;
+          try {
+            const response = await fetch(`${env}products_searcher?name=${this.searchQuery}`);
+            console.log('Fetching suggestions');
+            if (response.ok) {
+              const results = await response.json();
+              this.searchSuggestions = results;
+              this.searchCache[this.searchQuery] = results;
+            } else {
+              console.error('Error fetching suggestions', response);
+            }
+          } catch (error) {
+            console.error('Error executing fetch request to API', error);
           }
-        } catch (error) {
-          console.error('Error executing fetch request to API', error);
         }
       } else {
         this.searchSuggestions = [];
@@ -190,29 +185,44 @@ export default {
     },
 
     onSuggestionSelect(suggestion) {
-      this.searchQuery = suggestion.name; // Update searchQuery to full product name
-      this.selectedSuggestion = suggestion; // Save the selected suggestion
-      // Additional actions can be added here, like redirecting to the product page
+      console.log('Selected suggestion', suggestion.id)
+      this.$router.push({ name: 'product_details', params: { id: suggestion.id } });
     },
-
-    handleClick(item) {
-      this.$router.push({name: 'product_details', params: {id: item.id}});
-    }
   },
 };
 </script>
 
-<style>
-.clickable-record {
-  cursor: pointer;
-  transition: background-color 0.3s;
+<style scoped>
+.suggestions-container {
+  max-height: 200px; /* Ustaw na wysokość 4 elementów */
+  overflow-y: auto; /* Włącz przewijanie */
 }
 
-.clickable-record:hover {
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.suggestion-item:hover {
   background-color: #f5f5f5;
 }
 
-.search-bar {
-  margin-bottom: 20px;
+.suggestion-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.suggestion-name {
+  flex-grow: 1;
+}
+
+.suggestion-price {
+  margin-left: auto;
+  color: #888;
 }
 </style>
