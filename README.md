@@ -3,7 +3,7 @@
 ## About The Project
 
 This project is the front-end for an online store, developed with Vue.js. It provides a dynamic and responsive user interface to interact with the backend store API, allowing users to browse products, manage their shopping cart, and checkout.
-
+*almost finished*
 ## Features
 
 - **Login / Register**:
