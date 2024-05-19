@@ -10,8 +10,11 @@
           {{ item.name }}
         </v-tab>
       </v-tabs>
-      <v-breadcrumbs :items="['Login', 'Register']" class="breadcrumbs"></v-breadcrumbs>
-    </div>
+      <v-breadcrumbs class="breadcrumbs">
+        <v-breadcrumbs-item to="/login">Login</v-breadcrumbs-item>
+        <v-breadcrumbs-item>/</v-breadcrumbs-item>
+        <v-breadcrumbs-item to="/register">Register</v-breadcrumbs-item>
+      </v-breadcrumbs>    </div>
   </v-card>
 </template>
 
