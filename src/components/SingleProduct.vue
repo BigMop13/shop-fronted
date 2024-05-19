@@ -79,7 +79,7 @@ export default {
     },
 
     goToCart() {
-      this.router.push({ path: '/shopping-cart' });
+      this.router.push({ name: 'shopping-cart' });
     }
 
   }

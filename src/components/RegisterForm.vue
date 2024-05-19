@@ -88,9 +88,9 @@ export default {
           password: this.password.value
         });
 
-        this.showDialog('Registrations successfully');
+        this.showDialog('Rejestracja powiodła się');
       } catch (error) {
-          this.showDialog('ERROR: try again later');
+          this.showDialog('Błąd rejestracji');
       }
     },
 

@@ -22,9 +22,9 @@
   export default {
     data: () => ({
       links: [
-        'Home',
-        'About Us',
-        'Contact Us',
+        'Strona główna',
+        'O nas',
+        'Kontakt',
         ],
     }),
   }

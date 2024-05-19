@@ -109,7 +109,7 @@
           color="surface-variant"
           class="justify-space-between text-body-2 mt-4"
         >
-          category: {{ selectedCategory.value }}
+          Kategoria: {{ selectedCategory.value }}
           <div>
             Page {{ page }} of {{ pageCount }}
           </div>
@@ -148,7 +148,7 @@ export default {
 
   methods: {
     handleClick(item) {
-      this.$router.push({ name: 'product_details', params: { id: item.id } });
+      this.$router.replace({ name: 'product_details', params: { id: item.id } });
     },
 
     async fetchData() {
@@ -185,7 +185,6 @@ export default {
     },
 
     onSuggestionSelect(suggestion) {
-      console.log('Selected suggestion', suggestion.id)
       this.$router.push({ name: 'product_details', params: { id: suggestion.id } });
     },
   },
