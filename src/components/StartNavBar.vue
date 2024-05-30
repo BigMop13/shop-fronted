@@ -34,7 +34,6 @@ export default {
   watch: {
     tab(category) {
       EventBus.emit('tabSelected', {category: category})
-      console.log(category)
     }
   }
 }

@@ -45,7 +45,7 @@ const routes = [
     path: '/user/purchase/history',
     name: 'purchase-history',
     meta: {loggedNavbar: true, requiresAuth: true},
-    component: () => import('@/components/RegisterForm.vue'),
+    component: () => import('@/components/UserOrdersHistory.vue'),
   },
 ]
 
@@ -59,6 +59,7 @@ router.beforeEach((to, from, next) => {
     const authToken = localStorage.getItem('userToken');
 
     if (!authToken) {
+      console.log('no token');
       next({ name: 'login' });
     } else {
       next();

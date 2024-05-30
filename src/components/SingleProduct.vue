@@ -74,7 +74,6 @@ export default {
         cartProducts.push(newItem);
       }
       localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
-      console.log('Buying item:', item);
       this.showDialog = true;
     },
 
