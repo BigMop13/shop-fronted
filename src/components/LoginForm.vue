@@ -37,12 +37,15 @@
 <script>
 import axios from 'axios';
 import {useRouter} from "vue-router";
+import { inject } from 'vue';
 
 const defaultCategory = 1;
 export default {
 
   setup() {
     const router = useRouter();
+    const state = inject('state');
+
     return { router };
   },
 
@@ -82,6 +85,9 @@ export default {
           this.showDialog('Error', 'An error occurred. Please try again later.');
         }
       }
+
+      await this.router.push({name: 'products_list', params: {categoryId: defaultCategory}});
+
     },
 
     handleReset() {
@@ -99,7 +105,6 @@ export default {
 
     closeDialog() {
       this.dialog.show = false;
-      this.router.push({name: 'products_list', params: { categoryId: defaultCategory } });
     }
   }
 };

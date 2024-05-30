@@ -20,6 +20,26 @@
       type="password"
     ></v-text-field>
 
+    <v-text-field
+      v-model="clientDataInput.name"
+      label="Name"
+    ></v-text-field>
+
+    <v-text-field
+      v-model="clientDataInput.surname"
+      label="Surname"
+    ></v-text-field>
+
+    <v-text-field
+      v-model="clientDataInput.address"
+      label="Address"
+    ></v-text-field>
+
+    <v-text-field
+      v-model="clientDataInput.phone_number"
+      label="Phone Number"
+    ></v-text-field>
+
     <v-btn class="me-4" type="submit">
       Submit
     </v-btn>
@@ -67,6 +87,12 @@ export default {
         value: '',
         errorMessage: ''
       },
+      clientDataInput: {
+        name: '',
+        surname: '',
+        address: '',
+        phone_number: ''
+      },
       dialog: {
         show: false,
         title: '',
@@ -85,12 +111,18 @@ export default {
         const env = import.meta.env.VITE_APP_API_BASE_URL;
         await axios.post(`${env}register_user`, {
           email: this.email.value,
-          password: this.password.value
+          password: this.password.value,
+          client_data_input: {
+            name: this.clientDataInput.name,
+            surname: this.clientDataInput.surname,
+            address: this.clientDataInput.address,
+            phone_number: this.clientDataInput.phone_number
+          }
         });
 
         this.showDialog('Rejestracja powiodła się');
       } catch (error) {
-          this.showDialog('Błąd rejestracji');
+        this.showDialog('Błąd rejestracji');
       }
     },
 

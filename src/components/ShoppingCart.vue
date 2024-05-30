@@ -10,10 +10,12 @@
       </template>
     </v-data-table>
   </v-card>
-  <v-btn color="primary" @click="completePurchase">Dokończ zakupy</v-btn>
+  <v-btn color="primary" @click="completePurchase">Złóż zamówienie</v-btn>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
@@ -51,7 +53,28 @@ export default {
       localStorage.setItem('cartProducts', JSON.stringify(this.shoppingCartItems));
     },
     completePurchase() {
-      this.$router.push({name: 'client-data-purchase'});
+      const orderDetails = this.shoppingCartItems.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity
+      }));
+
+      const totalPrice = this.shoppingCartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+      const orderData = {
+        total_price: totalPrice,
+        order_date: new Date().toISOString(),
+        order_details: orderDetails
+      }
+
+      const env = import.meta.env.VITE_APP_API_BASE_URL;
+      axios.post(`${env}place_order`, orderData)
+        .then(response => {
+          localStorage.removeItem('cartProducts');
+          this.$router.push('/products/1');
+        })
+        .catch(error => {
+          console.error(error);
+        })
     }
   }
 };

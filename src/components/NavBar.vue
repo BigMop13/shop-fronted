@@ -11,10 +11,12 @@
         </v-tab>
       </v-tabs>
       <v-breadcrumbs class="breadcrumbs">
-        <v-breadcrumbs-item to="/login">Login</v-breadcrumbs-item>
-        <v-breadcrumbs-item>/</v-breadcrumbs-item>
-        <v-breadcrumbs-item to="/register">Register</v-breadcrumbs-item>
-      </v-breadcrumbs>    </div>
+        <v-breadcrumbs-item v-if="!token" to="/login">Login</v-breadcrumbs-item>
+        <v-breadcrumbs-item v-if="!token">/</v-breadcrumbs-item>
+        <v-breadcrumbs-item v-if="!token" to="/register">Register</v-breadcrumbs-item>
+        <v-breadcrumbs-item v-if="token" to="/user/purchase/history">{{ name }} {{ surname }}</v-breadcrumbs-item>
+      </v-breadcrumbs>
+    </div>
   </v-card>
 </template>
 
@@ -26,6 +28,9 @@ export default {
   data: () => ({
     tab: null,
     tabItems: [],
+    token: localStorage.getItem('userToken'),
+    name: '',
+    surname: ''
   }),
 
   setup() {
@@ -35,6 +40,9 @@ export default {
 
   mounted() {
     this.fetchData();
+    if (this.token) {
+      this.fetchUserDetails();
+    }
   },
 
   watch: {
@@ -48,6 +56,18 @@ export default {
       const env = import.meta.env.VITE_APP_API_BASE_URL;
       const response = await fetch(env + 'categories');
       this.tabItems = await response.json();
+    },
+
+    async fetchUserDetails() {
+      const env = import.meta.env.VITE_APP_API_BASE_URL;
+      const response = await fetch(env + 'user_data', {
+        headers: {
+          'Authorization': `Bearer ${this.token}`
+        }
+      });
+      const data = await response.json();
+      this.name = data.name;
+      this.surname = data.surname;
     },
 
     navigate(itemCategories) {

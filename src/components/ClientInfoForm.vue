@@ -15,6 +15,16 @@
     <label for="phone" class="form-label">Telefon</label>
     <input id="phone" v-model="form.phone" required class="form-input">
 
+    <v-data-table
+      :headers="cartHeaders"
+      :items="shoppingCartItems"
+      :search="search"
+    >
+      <template v-slot:item.action="{ item }">
+        <v-icon small @click="removeItem(item)" color="red">mdi-minus</v-icon>
+      </template>
+    </v-data-table>
+
     <button type="submit" class="form-submit">Złóż zamówienie</button>
   </form>
 
@@ -57,23 +67,29 @@ export default {
 
     const showDialogSuccess = ref(false)
     const showDialogFailure = ref(false)
+    const shoppingCartItems = ref([]);
+    const cartHeaders = ref([
+      { text: 'Nazwa', value: 'name' },
+      { text: 'Kategoria', value: 'category.name' },
+      { text: 'Ilość', value: 'quantity' },
+      { text: 'Cena', value: 'price' },
+      { text: 'Akcja', value: 'action', sortable: false }
+    ]);
+
+    function loadCartProducts() {
+      let products = localStorage.getItem('cartProducts');
+      shoppingCartItems.value = products ? JSON.parse(products) : [];
+    }
+
     function submitForm() {
-      const shoppingCartItems = JSON.parse(localStorage.getItem('cartProducts')) || [];
-      const orderDetails = shoppingCartItems.map(item => ({
+      const orderDetails = shoppingCartItems.value.map(item => ({
         product_id: item.id,
         quantity: item.quantity
       }));
 
-      const totalPrice = shoppingCartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+      const totalPrice = shoppingCartItems.value.reduce((total, item) => total + (item.price * item.quantity), 0);
 
       const orderData = {
-        client: {
-          name: form.value.firstName,
-          surname: form.value.lastName,
-          address: form.value.address,
-          email: form.value.email,
-          phone_number: form.value.phone
-        },
         total_price: totalPrice,
         order_date: new Date().toISOString(),
         order_details: orderDetails
@@ -91,7 +107,10 @@ export default {
         })
     }
 
-    return { form, submitForm, showDialogSuccess, showDialogFailure }
+    return { form, submitForm, showDialogSuccess, showDialogFailure, shoppingCartItems, cartHeaders, loadCartProducts }
+  },
+  created() {
+    this.loadCartProducts();
   }
 }
 </script>
