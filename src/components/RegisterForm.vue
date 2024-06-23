@@ -120,7 +120,7 @@ export default {
           }
         });
 
-        this.showDialog('Rejestracja powiodła się');
+        this.showDialog('Rejestracja powiodła się', 'Możesz się teraz zalogować');
       } catch (error) {
         this.showDialog('Błąd rejestracji');
       }

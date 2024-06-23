@@ -18,8 +18,8 @@ const routes = [
     component: () => import('@/components/ShoppingCart.vue'),
   },
   {
-    path: '/client-data-purchase',
-    name: 'client-data-purchase',
+    path: '/client-purchase',
+    name: 'client-purchase',
     meta: {loggedNavbar: true, requiresAuth: false},
     component: () => import('@/components/ClientInfoForm.vue'),
   },
@@ -36,8 +36,14 @@ const routes = [
     component: () => import('@/components/RegisterForm.vue'),
   },
   {
-    path: '/product_details/:id', // zrobić wyszukanie przedmiotu z sugestii przez name (osobny endpoint needed) (id przedmiotu nie jest dostępne w redisie, dołożyć index na name w bazie)
-    name: 'product_details',
+    path: '/product_details/:id',
+    name: 'product_details_id',
+    meta: {loggedNavbar: true, requiresAuth: false},
+    component: () => import('@/components/SingleProduct.vue')
+  },
+  {
+    path: '/product_details/:name',
+    name: 'product_details_name',
     meta: {loggedNavbar: true, requiresAuth: false},
     component: () => import('@/components/SingleProduct.vue')
   },

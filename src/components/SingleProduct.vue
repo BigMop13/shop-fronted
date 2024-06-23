@@ -4,7 +4,7 @@
     <v-row justify="center">
       <v-col cols="12" sm="8" md="6">
         <v-card>
-          <v-img :src="item.imageUrl" height="300px"></v-img>
+          <v-img :src="item.photo" height="300px"></v-img>
           <v-card-title>{{ item.name }}</v-card-title>
           <v-card-subtitle>{{ item.category.name }}</v-card-subtitle>
           <v-card-text>
@@ -13,8 +13,8 @@
             <div>Quantity: {{ item.stockQuantity }}</div>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="buyItem(item)">Buy Now</v-btn>
-            <v-btn color="secondary" @click="goToCart">Go to Cart</v-btn>
+            <v-btn color="primary" @click="buyItem(item)">Dodaj do koszyka</v-btn>
+            <v-btn color="secondary" @click="goToCart">Przejdź do koszyka</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -53,13 +53,23 @@ export default {
   },
   methods: {
     async fetchItemDetails() {
-      const itemId = this.$route.params.id;
+      if (this.$route.params.id) {
+        const itemId = this.$route.params.id;
 
-      const env = import.meta.env.VITE_APP_API_BASE_URL;
+        const env = import.meta.env.VITE_APP_API_BASE_URL;
 
-      const response = await fetch(env + 'products/' + itemId);
-      this.item = await response.json();
-      console.log(this.item);
+        const response = await fetch(env + 'products/' + itemId);
+        this.item = await response.json();
+      }
+    else {
+        const productName = this.$route.params.name;
+
+        const env = import.meta.env.VITE_APP_API_BASE_URL;
+
+        const response = await fetch(env + 'get_product_by_name' + `?name=${productName}`);
+        this.item = await response.json();
+      }
+    console.log(this.item.photo)
     },
 
     buyItem(item) {

@@ -1,14 +1,24 @@
 <template>
   <div>
-    <div v-for="(order, index) in userOrders" :key="index">
-      <p>Data zamówienia: {{ order.orderDate }}</p>
+    <h1>Historia zamówień</h1>
+    <div v-for="order in userOrders" :key="order.id" class="order">
+      <h2>Zamówienie #{{ order.id }}</h2>
+      <p>Data zamówienia: {{ new Date(order.orderDate).toLocaleDateString() }}</p>
+      <p>Status: {{ order.status }}</p>
       <p>Całkowita cena: {{ order.totalPrice }}</p>
-      //finisz this, products are not showing
+      <div v-for="detail in order.orderDetails" :key="detail.id" class="order-detail">
+        <h3>Produkt: {{ detail.product.name }}</h3>
+        <p>Ilość: {{ detail.quantity }}</p>
+        <p>Cena: {{ detail.product.price }}</p>
+        <img :src="detail.product.photo" alt="Zdjęcie produktu">
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
@@ -22,18 +32,10 @@ export default {
     async loadUserOrders() {
       try {
         const env = import.meta.env.VITE_APP_API_BASE_URL;
-        const response = await fetch(`${env}history/orders`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-          }
-        });
-        const data = await response.json();
-        this.userOrders = data.map(order => ({
-          name: order.name,
-          totalPrice: order.total_price,
-          orderDate: order.order_date
-        }));
-        console.log(this.userOrders);
+        const token = localStorage.getItem('userToken');
+        const headers = token ? {Authorization: `Bearer ${token}`} : {};
+        const response = await axios.get(`${env}history/orders`, {headers});
+        this.userOrders = response.data;
       } catch (error) {
         console.error('There was an error!', error);
       }
@@ -41,3 +43,18 @@ export default {
   }
 };
 </script>
+
+<style>
+.order {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.order-detail {
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+  margin-top: 10px;
+  background-color: #d1cecd;
+}
+</style>
