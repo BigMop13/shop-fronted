@@ -10,6 +10,33 @@
       </template>
     </v-data-table>
   </v-card>
+  <div v-if="!isLoggedIn">
+    <form @submit.prevent="submitClientData">
+      <v-text-field
+        v-model="clientDataInput.name"
+        label="Name"
+        required
+      ></v-text-field>
+
+      <v-text-field
+        v-model="clientDataInput.surname"
+        label="Surname"
+        required
+      ></v-text-field>
+
+      <v-text-field
+        v-model="clientDataInput.address"
+        label="Address"
+        required
+      ></v-text-field>
+
+      <v-text-field
+        v-model="clientDataInput.phone_number"
+        label="Phone Number"
+        required
+      ></v-text-field>
+    </form>
+  </div>
   <v-btn color="primary" @click="completePurchase">Złóż zamówienie</v-btn>
 </template>
 
@@ -19,6 +46,13 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      isLoggedIn: !!localStorage.getItem('userToken'),
+      clientDataInput: {
+        name: '',
+        surname: '',
+        address: '',
+        phone_number: ''
+      },
       search: '',
       shoppingCartItems: [],
       headers: [
@@ -52,22 +86,41 @@ export default {
     updateLocalStorage() {
       localStorage.setItem('cartProducts', JSON.stringify(this.shoppingCartItems));
     },
+    allFieldsFilled() {
+      return Object.values(this.clientDataInput).every(value => value !== '');
+    },
     completePurchase() {
+      if (!this.isLoggedIn && !this.allFieldsFilled()) {
+        alert('Wszystkie pola są wymagane!');
+        return;
+      }
       const orderDetails = this.shoppingCartItems.map(item => ({
         product_id: item.id,
         quantity: item.quantity
       }));
 
       const totalPrice = this.shoppingCartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+      const token = localStorage.getItem('userToken');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-      const orderData = {
+      let orderData = {
         total_price: totalPrice,
         order_date: new Date().toISOString(),
-        order_details: orderDetails
+        order_details: orderDetails,
+      };
+
+      if (!this.isLoggedIn) {
+        orderData = {
+          client: this.clientDataInput,
+          total_price: totalPrice,
+          order_date: new Date().toISOString(),
+          order_details: orderDetails,
+        }
       }
 
+
       const env = import.meta.env.VITE_APP_API_BASE_URL;
-      axios.post(`${env}place_order`, orderData)
+      axios.post(`${env}place_order`, orderData, {headers})
         .then(response => {
           localStorage.removeItem('cartProducts');
           this.$router.push('/products/1');

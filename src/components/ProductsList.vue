@@ -17,8 +17,7 @@
           class="suggestion-item"
           @click="onSuggestionSelect(suggestion)"
         >
-          <div class="suggestion-name">{{ suggestion.photo }}</div>
-          <div class="suggestion-price">${{ suggestion.name }}</div>
+          <div class="suggestion-price">{{ suggestion.name }}</div>
         </div>
       </div>
     </div>
@@ -148,7 +147,7 @@ export default {
 
   methods: {
     handleClick(item) {
-      this.$router.replace({ name: 'product_details', params: { id: item.id } });
+      this.$router.replace({ name: 'product_details_id', params: { id: item.id } });
     },
 
     async fetchData() {
@@ -161,13 +160,11 @@ export default {
     async fetchSuggestions() {
       if (this.searchQuery.length >= 2) {
         if (this.searchCache[this.searchQuery]) {
-          console.log('Using cache');
           this.searchSuggestions = this.searchCache[this.searchQuery];
         } else {
           const env = import.meta.env.VITE_APP_API_BASE_URL;
           try {
             const response = await fetch(`${env}products_searcher?name=${this.searchQuery}`);
-            console.log('Fetching suggestions');
             if (response.ok) {
               const results = await response.json();
               this.searchSuggestions = results;
@@ -185,7 +182,7 @@ export default {
     },
 
     onSuggestionSelect(suggestion) {
-      this.$router.push({ name: 'product_details', params: { id: suggestion.id } });
+      this.$router.push({ name: 'product_details_name', params: { name: suggestion.name } });
     },
   },
 };
@@ -193,20 +190,25 @@ export default {
 
 <style scoped>
 .suggestions-container {
-  max-height: 200px; /* Ustaw na wysokość 4 elementów */
-  overflow-y: auto; /* Włącz przewijanie */
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .suggestion-item {
   display: flex;
+  justify-content: flex-start;
   align-items: center;
   cursor: pointer;
   padding: 10px;
   border-bottom: 1px solid #eee;
+  background-color: #e6f7ff;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: black;
 }
 
 .suggestion-item:hover {
-  background-color: #f5f5f5;
+  background-color: #b3e5fc;
 }
 
 .suggestion-image {
@@ -218,10 +220,5 @@ export default {
 
 .suggestion-name {
   flex-grow: 1;
-}
-
-.suggestion-price {
-  margin-left: auto;
-  color: #888;
 }
 </style>

@@ -37,15 +37,12 @@
 <script>
 import axios from 'axios';
 import {useRouter} from "vue-router";
-import { inject } from 'vue';
 
 const defaultCategory = 1;
 export default {
 
   setup() {
     const router = useRouter();
-    const state = inject('state');
-
     return { router };
   },
 
@@ -63,7 +60,7 @@ export default {
         show: false,
         title: '',
         message: ''
-      }
+      },
     };
   },
 
@@ -77,17 +74,21 @@ export default {
         });
 
         localStorage.setItem('userToken', response.data.token);
-        this.showDialog('Login Successful', 'You are now logged in.');
+        const nextResponse = await fetch(env + 'user_data', {
+          headers: {
+            'Authorization': `Bearer ` + response.data.token,
+          }
+        });
+        const data = await nextResponse.json();
+        console.log(data);
+        localStorage.setItem('userName', data.name);
+        localStorage.setItem('userSurname', data.surname);
+        this.showDialog('Logowanie udane', 'Zostałeś zalogowany do sklepu');
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          this.showDialog('Login Failed', 'Incorrect email or password.');
-        } else {
-          this.showDialog('Error', 'An error occurred. Please try again later.');
+          this.showDialog('Logowanie nieudane', 'Nieprawidłowy email lub hasło');
         }
       }
-
-      await this.router.push({name: 'products_list', params: {categoryId: defaultCategory}});
-
     },
 
     handleReset() {
@@ -104,6 +105,9 @@ export default {
     },
 
     closeDialog() {
+      if (this.dialog.title === 'Logowanie udane'){
+        this.router.push({name: 'products_list', params: {categoryId: defaultCategory}});
+      }
       this.dialog.show = false;
     }
   }

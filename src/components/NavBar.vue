@@ -23,6 +23,7 @@
 <script>
 import EventBus from "@/plugins/eventBus";
 import {useRouter} from "vue-router";
+import {useStore} from 'vuex';
 
 export default {
   data: () => ({
@@ -30,25 +31,29 @@ export default {
     tabItems: [],
     token: localStorage.getItem('userToken'),
     name: '',
-    surname: ''
+    surname: '',
   }),
 
   setup() {
     const router = useRouter();
-    return {router};
+    const store = useStore();
+    return {router, store};
   },
 
   mounted() {
     this.fetchData();
-    if (this.token) {
-      this.fetchUserDetails();
-    }
+    this.name = localStorage.getItem('userName');
+    this.surname = localStorage.getItem('userSurname');
   },
 
   watch: {
     tab(category) {
       EventBus.emit('tabSelected', {category: category})
-    }
+    },
+    token() {
+      this.name = localStorage.getItem('userName');
+      this.surname = localStorage.getItem('userSurname');
+    },
   },
 
   methods: {
@@ -56,18 +61,6 @@ export default {
       const env = import.meta.env.VITE_APP_API_BASE_URL;
       const response = await fetch(env + 'categories');
       this.tabItems = await response.json();
-    },
-
-    async fetchUserDetails() {
-      const env = import.meta.env.VITE_APP_API_BASE_URL;
-      const response = await fetch(env + 'user_data', {
-        headers: {
-          'Authorization': `Bearer ${this.token}`
-        }
-      });
-      const data = await response.json();
-      this.name = data.name;
-      this.surname = data.surname;
     },
 
     navigate(itemCategories) {

@@ -1,141 +1,47 @@
 <template>
-  <form @submit.prevent="submitForm" class="form-container">
-    <label for="firstName" class="form-label">Imię</label>
-    <input id="firstName" v-model="form.firstName" required class="form-input">
+  <form @submit.prevent="submit">
+    <v-text-field
+      v-model="clientDataInput.name"
+      label="Name"
+    ></v-text-field>
 
-    <label for="lastName" class="form-label">Nazwisko</label>
-    <input id="lastName" v-model="form.lastName" required class="form-input">
+    <v-text-field
+      v-model="clientDataInput.surname"
+      label="Surname"
+    ></v-text-field>
 
-    <label for="address" class="form-label">Adres</label>
-    <input id="address" v-model="form.address" required class="form-input">
+    <v-text-field
+      v-model="clientDataInput.address"
+      label="Address"
+    ></v-text-field>
 
-    <label for="email" class="form-label">Email</label>
-    <input id="email" type="email" v-model="form.email" required class="form-input">
+    <v-text-field
+      v-model="clientDataInput.phone_number"
+      label="Phone Number"
+    ></v-text-field>
 
-    <label for="phone" class="form-label">Telefon</label>
-    <input id="phone" v-model="form.phone" required class="form-input">
+    <v-btn class="me-4" type="submit">
+      Submit
+    </v-btn>
 
-    <v-data-table
-      :headers="cartHeaders"
-      :items="shoppingCartItems"
-      :search="search"
-    >
-      <template v-slot:item.action="{ item }">
-        <v-icon small @click="removeItem(item)" color="red">mdi-minus</v-icon>
-      </template>
-    </v-data-table>
-
-    <button type="submit" class="form-submit">Złóż zamówienie</button>
+    <v-btn>
+      Clear
+    </v-btn>
   </form>
 
-  <v-dialog v-model="showDialogSuccess">
+  <v-dialog v-model="dialog.show" persistent max-width="300px">
     <v-card>
-      <v-card-title class="text-h5">Potwierdzenie</v-card-title>
-      <v-card-text>Zamówienie złożone pomyślnie, dziękujemy</v-card-text>
+      <v-card-title>{{ dialog.title }}</v-card-title>
+      <v-card-text>{{ dialog.message }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="showDialogSuccess = false">OK</v-btn>
+        <v-btn color="green darken-1" text @click="closeDialog">OK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="showDialogFailure">
-    <v-card>
-      <v-card-title class="text-h5">Komunikat</v-card-title>
-      <v-card-text>Wystąpił błąd podczas składania zamówienia. Spróbuj ponownie później lub skonsultuj się z właścicielem sklepu</v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="red darken-1" text @click="showDialogFailure = false">OK</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 </template>
 
 <script>
-import { ref } from 'vue'
-import axios from 'axios'
 
-export default {
-  setup() {
-    const form = ref({
-      firstName: '',
-      lastName: '',
-      address: '',
-      email: '',
-      phone: ''
-    })
-
-    const showDialogSuccess = ref(false)
-    const showDialogFailure = ref(false)
-    const shoppingCartItems = ref([]);
-    const cartHeaders = ref([
-      { text: 'Nazwa', value: 'name' },
-      { text: 'Kategoria', value: 'category.name' },
-      { text: 'Ilość', value: 'quantity' },
-      { text: 'Cena', value: 'price' },
-      { text: 'Akcja', value: 'action', sortable: false }
-    ]);
-
-    function loadCartProducts() {
-      let products = localStorage.getItem('cartProducts');
-      shoppingCartItems.value = products ? JSON.parse(products) : [];
-    }
-
-    function submitForm() {
-      const orderDetails = shoppingCartItems.value.map(item => ({
-        product_id: item.id,
-        quantity: item.quantity
-      }));
-
-      const totalPrice = shoppingCartItems.value.reduce((total, item) => total + (item.price * item.quantity), 0);
-
-      const orderData = {
-        total_price: totalPrice,
-        order_date: new Date().toISOString(),
-        order_details: orderDetails
-      }
-
-      const env = import.meta.env.VITE_APP_API_BASE_URL;
-      axios.post(`${env}place_order`, orderData)
-        .then(response => {
-          localStorage.removeItem('cartProducts');
-          showDialogSuccess.value = true;
-          this.router.push('/products/:categoryId');
-        })
-        .catch(error => {
-          showDialogFailure.value = true;
-        })
-    }
-
-    return { form, submitForm, showDialogSuccess, showDialogFailure, shoppingCartItems, cartHeaders, loadCartProducts }
-  },
-  created() {
-    this.loadCartProducts();
-  }
-}
 </script>
-
-<style scoped>
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form-input {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  width: 100%;
-}
-
-.form-submit {
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-</style>
