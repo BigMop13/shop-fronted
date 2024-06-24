@@ -7,10 +7,16 @@
       <p>Status: {{ order.status }}</p>
       <p>Całkowita cena: {{ order.totalPrice }}</p>
       <div v-for="detail in order.orderDetails" :key="detail.id" class="order-detail">
-        <h3>Produkt: {{ detail.product.name }}</h3>
-        <p>Ilość: {{ detail.quantity }}</p>
-        <p>Cena: {{ detail.product.price }}</p>
-        <img :src="detail.product.photo" alt="Zdjęcie produktu">
+        <div class="product-info">
+          <div class="product-details">
+            <h3>Produkt: {{ detail.product.name }}</h3>
+            <p>Ilość: {{ detail.quantity }}</p>
+            <p>Cena: {{ detail.product.price }}</p>
+          </div>
+          <div class="product-image">
+            <img :src="detail.product.photo" alt="Zdjęcie produktu">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -56,5 +62,25 @@ export default {
   padding-top: 10px;
   margin-top: 10px;
   background-color: #d1cecd;
+}
+
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-details {
+  flex: 1;
+}
+
+.product-image {
+  flex-shrink: 0;
+  margin-left: 20px;
+}
+
+.product-image img {
+  max-width: 150px; /* Możesz dostosować rozmiar obrazka tutaj */
+  height: auto;
 }
 </style>
