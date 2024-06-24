@@ -63,7 +63,7 @@
             <div @click="handleClick(item)" class="clickable-record">
               <v-sheet border>
                 <v-img
-                  :src="item.imageUrl"
+                  :src="item.photo"
                   cover
                   height="150"
                 ></v-img>
